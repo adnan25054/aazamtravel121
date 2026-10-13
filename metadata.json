@@ -1,0 +1,8 @@
+{
+  "name": "Remix 1 Aazam Travel Agency",
+  "description": "Premier travel agency in Akola, Maharashtra offering train ticket booking assistance, flights, buses, hotels, and holiday tour packages.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

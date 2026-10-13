@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="ogBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041224" />
+      <stop offset="50%" stop-color="#07192F" />
+      <stop offset="100%" stop-color="#0B2545" />
+    </linearGradient>
+    <linearGradient id="ogCardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2C59" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#07192F" stop-opacity="0.95" />
+    </linearGradient>
+    <linearGradient id="ogGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <filter id="ogShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Deep Luxury Navy Background -->
+  <rect width="1200" height="630" fill="url(#ogBg)" />
+
+  <!-- World Grid Background Pattern -->
+  <g stroke="#38BDF8" stroke-width="1" stroke-opacity="0.08">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="200" y1="0" x2="200" y2="630" />
+    <line x1="400" y1="0" x2="400" y2="630" />
+    <line x1="600" y1="0" x2="600" y2="630" />
+    <line x1="800" y1="0" x2="800" y2="630" />
+    <line x1="1000" y1="0" x2="1000" y2="630" />
+  </g>
+
+  <!-- Accent Orange & Green Glow Blobs -->
+  <circle cx="200" cy="200" r="280" fill="#EA580C" opacity="0.12" filter="blur(60px)" />
+  <circle cx="1000" cy="450" r="300" fill="#16A34A" opacity="0.10" filter="blur(60px)" />
+
+  <!-- Outer Border Frame -->
+  <rect x="40" y="40" width="1120" height="550" rx="32" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-opacity="0.4" />
+
+  <!-- Left Side: Official Brand Emblem (Large 290x290) -->
+  <g transform="translate(95, 105)" filter="url(#ogShadow)">
+    <rect x="0" y="0" width="290" height="290" rx="40" fill="#FFFFFF" fill-opacity="0.97" stroke="#38BDF8" stroke-width="2.5" />
+
+    <!-- Embed New Logo Graphic Inside White Card -->
+    <!-- Globe -->
+    <g transform="translate(85, 30)">
+      <circle cx="60" cy="60" r="54" fill="#1E88E5" />
+      <g fill="#4CAF50">
+        <path d="M 25 30 Q 45 20 65 28 Q 85 35 95 50 Q 80 65 65 60 Q 45 75 25 65 Z" />
+        <path d="M 45 60 Q 70 62 85 75 Q 90 95 70 105 Q 50 110 45 90 Z" />
+      </g>
+      <!-- Orbit Arrow -->
+      <path d="M 10 90 C -2 55 20 15 65 10 C 95 6 125 20 140 45" fill="none" stroke="#38BDF8" stroke-width="4.5" stroke-linecap="round" />
+      <polygon points="144,43 134,37 139,52" fill="#38BDF8" />
+    </g>
+
+    <!-- Airplane -->
+    <g transform="translate(200, 35) rotate(-22)">
+      <path d="M 0 14 C 15 8 45 6 60 13 C 52 18 20 22 0 14 Z" fill="#E53935" stroke="#FFFFFF" stroke-width="1" />
+      <path d="M 24 10 L 12 -20 L 22 -20 L 38 10 Z" fill="#D32F2F" />
+      <path d="M 28 16 L 16 40 L 25 40 L 40 16 Z" fill="#B71C1C" />
+      <path d="M 4 11 L -6 -3 L 1 -3 L 9 11 Z" fill="#E53935" />
+    </g>
+
+    <!-- Hotel -->
+    <g transform="translate(195, 75)">
+      <rect x="18" y="-14" width="28" height="11" rx="2" fill="#D32F2F" />
+      <text x="32" y="-6" font-family="system-ui, sans-serif" font-size="6.5" font-weight="900" fill="#FFFFFF" text-anchor="middle">HOTEL</text>
+      <rect x="0" y="24" width="30" height="50" rx="2" fill="#E53935" />
+      <rect x="28" y="0" width="22" height="74" rx="2" fill="#388E3C" />
+    </g>
+
+    <!-- High-Speed Bullet Train -->
+    <g transform="translate(20, 115)">
+      <line x1="-15" y1="38" x2="30" y2="38" stroke="#C62828" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="-5" y1="46" x2="20" y2="46" stroke="#C62828" stroke-width="2" stroke-linecap="round" />
+      <line x1="-18" y1="56" x2="12" y2="56" stroke="#43A047" stroke-width="2" stroke-linecap="round" />
+      <!-- Train Body -->
+      <path d="M 22 55 C 30 38 58 28 102 26 L 175 26 L 175 68 L 48 68 C 32 68 22 63 22 55 Z" fill="#3FA643" stroke="#2E7D32" stroke-width="1.2" />
+      <path d="M 25 53 C 38 36 68 29 115 28 L 174 28" fill="none" stroke="#81C784" stroke-width="2.8" stroke-linecap="round" />
+      <path d="M 36 53 C 58 44 88 42 175 42 L 175 48 C 88 48 56 50 36 59 Z" fill="#D32F2F" />
+      <rect x="100" y="34" width="13" height="8" rx="2" fill="#81D4FA" stroke="#1E293B" stroke-width="0.8" />
+      <rect x="118" y="34" width="13" height="8" rx="2" fill="#81D4FA" stroke="#1E293B" stroke-width="0.8" />
+      <rect x="136" y="34" width="13" height="8" rx="2" fill="#81D4FA" stroke="#1E293B" stroke-width="0.8" />
+      <rect x="154" y="34" width="13" height="8" rx="2" fill="#81D4FA" stroke="#1E293B" stroke-width="0.8" />
+      <ellipse cx="26" cy="55" rx="3" ry="5" fill="#FDD835" />
+    </g>
+
+    <!-- Tour Bus -->
+    <g transform="translate(170, 130)">
+      <rect x="0" y="8" width="90" height="40" rx="5" fill="#E53935" stroke="#C62828" stroke-width="1" />
+      <g fill="#38BDF8" stroke="#FFFFFF" stroke-width="1">
+        <rect x="6" y="14" width="15" height="14" rx="2" />
+        <rect x="24" y="14" width="14" height="14" rx="2" />
+        <rect x="41" y="14" width="14" height="14" rx="2" />
+        <rect x="58" y="14" width="14" height="14" rx="2" />
+        <rect x="74" y="14" width="12" height="14" rx="2" />
+      </g>
+      <circle cx="22" cy="48" r="7.5" fill="#212121" stroke="#EEEEEE" stroke-width="1.2" />
+      <circle cx="70" cy="48" r="7.5" fill="#212121" stroke="#EEEEEE" stroke-width="1.2" />
+    </g>
+
+    <!-- Clean Forest Green Typography at Bottom of Card -->
+    <text x="145" y="248" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="20" font-weight="900" fill="#256B36" text-anchor="middle" letter-spacing="-0.3">
+      Aazam Travel Agency
+    </text>
+    <text x="145" y="268" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="10.5" font-weight="700" fill="#EA580C" text-anchor="middle" letter-spacing="1">
+      PAN-INDIA ONLINE BOOKING
+    </text>
+  </g>
+
+  <!-- Right Side: Official Brand Typography & Service Pitch -->
+  <g transform="translate(430, 110)">
+    <!-- Location & Certification Kicker -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="-20" width="220" height="32" rx="8" fill="#166534" />
+      <text x="110" y="1" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">
+        ✓ VERIFIED TRAVEL DESK
+      </text>
+      
+      <text x="240" y="0" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="700" fill="#F59E0B" letter-spacing="1.5">
+        AKOLA, MAHARASHTRA
+      </text>
+    </g>
+
+    <!-- Main Title -->
+    <text x="0" y="115" font-family="'Cabinet Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif" font-size="58" font-weight="900" fill="#FFFFFF" letter-spacing="-1">
+      Aazam Travel Agency
+    </text>
+
+    <!-- Subtitle / Tagline -->
+    <text x="0" y="165" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="24" font-weight="600" fill="#94A3B8">
+      Your Trusted Partner for Train, Flight &amp; Holiday Tours
+    </text>
+
+    <!-- Service Pills -->
+    <g transform="translate(0, 215)">
+      <!-- Pill 1: Train Tickets -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="195" height="46" rx="12" fill="#0F2C59" stroke="#38BDF8" stroke-width="1.5" />
+        <text x="97" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+          🚆 IRCTC Train Tickets
+        </text>
+      </g>
+
+      <!-- Pill 2: Flight Tickets -->
+      <g transform="translate(210, 0)">
+        <rect x="0" y="0" width="180" height="46" rx="12" fill="#0F2C59" stroke="#38BDF8" stroke-width="1.5" />
+        <text x="90" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+          ✈️ Air Tickets / Best Fare
+        </text>
+      </g>
+
+      <!-- Pill 3: Bus Booking -->
+      <g transform="translate(405, 0)">
+        <rect x="0" y="0" width="165" height="46" rx="12" fill="#0F2C59" stroke="#38BDF8" stroke-width="1.5" />
+        <text x="82" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+          🚌 Bus Reservations
+        </text>
+      </g>
+    </g>
+
+    <!-- Second Row Pills: Tour Packages & Hotels -->
+    <g transform="translate(0, 275)">
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="280" height="46" rx="12" fill="#064E3B" stroke="#34D399" stroke-width="1.5" />
+        <text x="140" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+          🕌 Umrah &amp; Religious Packages
+        </text>
+      </g>
+      <g transform="translate(295, 0)">
+        <rect x="0" y="0" width="275" height="46" rx="12" fill="#7C2D12" stroke="#FB923C" stroke-width="1.5" />
+        <text x="137" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+          🌴 Kashmir, Goa &amp; Holiday Tours
+        </text>
+      </g>
+    </g>
+
+    <!-- Contact & Call to Action Footer inside Image -->
+    <g transform="translate(0, 360)">
+      <rect x="0" y="0" width="680" height="58" rx="14" fill="#041224" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="25" y="36" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="18" font-weight="800" fill="#FCD34D">
+        📞 +91 94215 56220
+      </text>
+      <text x="240" y="36" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="15" font-weight="700" fill="#38BDF8">
+        💬 WhatsApp Desk
+      </text>
+      <text x="420" y="36" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" font-weight="600" fill="#CBD5E1">
+        📍 Station Rd, Akola (MH)
+      </text>
+    </g>
+  </g>
+</svg>
