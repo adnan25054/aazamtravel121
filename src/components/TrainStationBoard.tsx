@@ -54,10 +54,10 @@ export const TrainStationBoard: React.FC<TrainStationBoardProps> = ({
           <div>
             <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
               <Building className="w-5 h-5 text-sky-600" />
-              RailRadar Live Station Board & Departures
+              RailKit Live Station Board & Departures
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Powered by RailRadar API: Real-time arrivals & departures, platform numbers, expected timings, and live movement status.
+              Powered by RailKit API (https://api.railkit.in): Real-time arrivals & departures, platform numbers, expected timings, and live movement status.
             </p>
           </div>
         </div>
@@ -360,6 +360,20 @@ export const TrainStationBoard: React.FC<TrainStationBoardProps> = ({
                 );
               })}
           </div>
+        </div>
+      )}
+
+      {!stationBoardData && !stationBoardLoading && !stationBoardError && (
+        <div className="py-12 px-4 text-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50">
+          <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center mx-auto mb-3">
+            <Building className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-bold text-slate-800">
+            Station Live Arrivals & Departures Board
+          </h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto mt-1">
+            Search any Indian Railways station name or code (e.g. NDLS, CSMT, INDB, HWH) or click a popular station above to view real-time train movements.
+          </p>
         </div>
       )}
     </div>

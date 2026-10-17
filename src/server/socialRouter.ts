@@ -581,11 +581,58 @@ export function setupSocialRoutes(app: Express) {
     });
   });
 
-  // Admin: Users
+  // Public: Community Members / All Users (Accessible by everyone, not just admin)
+  app.get('/api/social/users', (req: Request, res: Response) => {
+    const db = loadSocialDb();
+    const q = String(req.query.q || '').toLowerCase();
+    const role = String(req.query.role || '').toLowerCase();
+    
+    let users = db.profiles.filter((p) => p.status !== 'suspended' && p.status !== 'banned');
+    if (role === 'not_admin' || role === 'user') {
+      users = users.filter((u) => u.role !== 'admin' && u.role !== 'super_admin');
+    } else if (role === 'admin') {
+      users = users.filter((u) => u.role === 'admin' || u.role === 'super_admin');
+    }
+
+    if (q) {
+      users = users.filter(
+        (u) =>
+          u.username.toLowerCase().includes(q) ||
+          u.displayName.toLowerCase().includes(q)
+      );
+    }
+
+    // Return safe public user profiles
+    const safeUsers = users.map(({ id, username, displayName, bio, avatarUrl, coverUrl, isVerified, role, followerCount, followingCount, postCount }) => ({
+      id,
+      username,
+      displayName,
+      bio,
+      avatarUrl,
+      coverUrl,
+      isVerified,
+      role,
+      followerCount,
+      followingCount,
+      postCount,
+    }));
+
+    res.json({ users: safeUsers });
+  });
+
+  // Admin: Users (Supports role='not_admin' | 'admin' | 'all')
   app.get('/api/social/admin/users', (req: Request, res: Response) => {
     const db = loadSocialDb();
     const q = String(req.query.q || '').toLowerCase();
+    const role = String(req.query.role || '').toLowerCase();
+
     let users = db.profiles;
+    if (role === 'not_admin' || role === 'user') {
+      users = users.filter((u) => u.role !== 'admin' && u.role !== 'super_admin');
+    } else if (role === 'admin') {
+      users = users.filter((u) => u.role === 'admin' || u.role === 'super_admin');
+    }
+
     if (q) {
       users = users.filter(
         (u) =>

@@ -15,15 +15,21 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [matchingUsers, setMatchingUsers] = useState<SocialProfile[]>([]);
+  const [allCommunityUsers, setAllCommunityUsers] = useState<SocialProfile[]>([]);
+  const [userFilter, setUserFilter] = useState<'all' | 'not_admin'>('all');
   const [trendingTags, setTrendingTags] = useState<string[]>([]);
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchExploreData = async () => {
     try {
-      const res = await socialApi.getExplore();
+      const [res, uRes] = await Promise.all([
+        socialApi.getExplore(),
+        socialApi.getPublicUsers(),
+      ]);
       setPosts(res.posts || []);
       setTrendingTags(res.trendingTags || []);
+      setAllCommunityUsers(uRes.users || []);
     } catch (err) {
       console.error('Failed to load explore items:', err);
     } finally {
@@ -117,6 +123,78 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 2b. Community Members Directory (Show All Users & Not Admin Filter for all visitors) */}
+      {!searchQuery && allCommunityUsers.length > 0 && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-orange-500" />
+              <div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">Community Travelers &amp; Members</h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Discover fellow travelers and local guides</p>
+              </div>
+            </div>
+
+            {/* Not Admin / All User filter */}
+            <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto text-xs">
+              <button
+                type="button"
+                onClick={() => setUserFilter('all')}
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  userFilter === 'all'
+                    ? 'bg-white dark:bg-slate-900 text-[#0B2545] dark:text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                All Users ({allCommunityUsers.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setUserFilter('not_admin')}
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  userFilter === 'not_admin'
+                    ? 'bg-orange-500 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-orange-600'
+                }`}
+              >
+                Not Admin ({allCommunityUsers.filter((u) => u.role !== 'admin' && u.role !== 'super_admin').length})
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {allCommunityUsers
+              .filter((u) => (userFilter === 'not_admin' ? u.role !== 'admin' && u.role !== 'super_admin' : true))
+              .map((u) => (
+                <div
+                  key={u.id}
+                  onClick={() => onNavigateProfile(u.username)}
+                  className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-slate-200/80 dark:border-slate-700/80 cursor-pointer flex flex-col items-center text-center transition-all group"
+                >
+                  <img
+                    src={u.avatarUrl || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=150&auto=format&fit=crop&q=80'}
+                    alt={u.displayName}
+                    className="w-14 h-14 rounded-full object-cover border-2 border-orange-500/30 group-hover:border-orange-500 mb-2 shadow-xs"
+                  />
+                  <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-orange-500 truncate w-full">
+                    {u.displayName}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate w-full">
+                    @{u.username}
+                  </div>
+                  <span className={`mt-2 text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    u.role === 'super_admin' || u.role === 'admin'
+                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400'
+                      : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                  }`}>
+                    {u.role === 'super_admin' ? 'Super Admin' : u.role === 'admin' ? 'Admin' : 'Traveler'}
+                  </span>
+                </div>
+              ))}
           </div>
         </div>
       )}

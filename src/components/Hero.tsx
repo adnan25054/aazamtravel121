@@ -1,6 +1,6 @@
 import React from 'react';
 import { WebsiteSettings } from '../types';
-import { Train, Plane, Building2, MessageSquare, MapPin, CheckCircle2 } from 'lucide-react';
+import { Train, Plane, Building2, MessageSquare, MapPin, CheckCircle2, Coins } from 'lucide-react';
 
 interface HeroProps {
   settings: WebsiteSettings;
@@ -9,6 +9,7 @@ interface HeroProps {
   onBookHotelClick: () => void;
   onExploreServicesClick: () => void;
   onSearchStationsClick?: () => void;
+  onCurrencyClick?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -18,6 +19,7 @@ export const Hero: React.FC<HeroProps> = ({
   onBookHotelClick,
   onExploreServicesClick,
   onSearchStationsClick,
+  onCurrencyClick,
 }) => {
   const cleanWhatsApp = settings.whatsapp.replace(/[^0-9]/g, '');
 
@@ -99,6 +101,16 @@ export const Hero: React.FC<HeroProps> = ({
               <Building2 className="w-4 h-4" />
               <span>Book Hotels</span>
             </button>
+
+            {onCurrencyClick && (
+              <button
+                onClick={onCurrencyClick}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-xl shadow-emerald-600/25 transition-all hover:scale-105 active:scale-95"
+              >
+                <Coins className="w-4 h-4 text-emerald-200" />
+                <span>Currency Converter</span>
+              </button>
+            )}
 
             {onSearchStationsClick && (
               <button

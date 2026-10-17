@@ -59,6 +59,28 @@ export interface TourPackage {
   description: string;
 }
 
+export interface DestinationItem {
+  id: string;
+  name: string;
+  state: string;
+  category: 'Metropolitan' | 'Beach' | 'Heritage' | 'Spiritual' | 'Hill Station' | 'Nature';
+  tag: string;
+  image: string;
+  description: string;
+  highlights: string[];
+  bestTimeToVisit: string;
+  popularFor: string;
+  featured?: boolean;
+}
+
+export interface CustomerUser {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  createdAt: string;
+}
+
 export interface ServiceItem {
   id: string;
   key: ServiceType;
@@ -163,12 +185,57 @@ export interface LiveTrainStatusResponse {
   CurrentStation: LiveTrainStation;
   TrainRoute: LiveTrainRouteStation[];
   Message?: string;
+  provider?: string;
+  source?: string;
+  speed?: string;
+  lastUpdated?: string;
+  statusNote?: string;
+  totalDistanceKm?: number;
+  totalStations?: number;
+  totalStoppageStations?: number;
+  currentStationCode?: string;
+  progress?: {
+    journeyStatus?: string;
+    currentStationIndex?: number;
+    totalStations?: number;
+    passedStations?: number;
+    remainingStations?: number;
+    currentDistanceKm?: number;
+    distanceRemainingKm?: number;
+    percent?: number;
+  };
+  timeline?: Array<{
+    type?: string;
+    status?: string;
+    stationCode?: string;
+    stationName?: string;
+    platform?: string;
+    distanceKm?: string;
+    arrival?: {
+      scheduled?: string;
+      actual?: string;
+      delay?: string;
+    };
+    departure?: {
+      scheduled?: string;
+      actual?: string;
+      delay?: string;
+    };
+  }>;
+  coachPosition?: Array<{
+    type: string;
+    number: string;
+    position: string;
+  }>;
 }
 
 export interface PNRPassenger {
   Passenger: string;
   BookingStatus: string;
   CurrentStatus: string;
+  Coach?: string;
+  Berth?: string;
+  Status?: string;
 }
 
 export interface PNRStatusResponse {
@@ -182,6 +249,10 @@ export interface PNRStatusResponse {
   From: string;
   To: string;
   JourneyDate: string;
+  Quota?: string;
+  Fare?: string;
+  provider?: string;
+  source?: string;
   Passangers: PNRPassenger[];
 }
 
@@ -544,6 +615,36 @@ export interface CurrencyRatesResponse {
   lastUpdated: string;
   provider: string;
   isFallback?: boolean;
+}
+
+export type ReasoningEffort = 'low' | 'medium' | 'high';
+
+export interface AiChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  imageUrl?: string;
+  createdAt: string;
+  reasoningEffort?: ReasoningEffort;
+  webSearchUsed?: boolean;
+}
+
+export interface AiChatRequest {
+  message: string;
+  imageUrl?: string;
+  reasoningEffort?: ReasoningEffort;
+  enableWebSearch?: boolean;
+}
+
+export interface AiChatResponse {
+  success: boolean;
+  reply: string;
+  model: string;
+  reasoningEffort: ReasoningEffort;
+  webSearchUsed: boolean;
+  creditsConsumed?: number;
+  error?: string;
+  details?: any;
 }
 
 

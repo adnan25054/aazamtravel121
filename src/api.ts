@@ -2,6 +2,8 @@ import {
   AdminStats,
   AdminUser,
   CustomerRecord,
+  CustomerUser,
+  DestinationItem,
   Enquiry,
   EnquiryNote,
   EnquiryStatus,
@@ -15,6 +17,8 @@ import {
   NewsApiResponse,
   FlightApiResponse,
   CurrencyRatesResponse,
+  AiChatRequest,
+  AiChatResponse,
 } from './types';
 
 const TOKEN_KEY = 'aazam_admin_token';
@@ -66,6 +70,109 @@ export async function fetchCurrencyRates(base: string = 'INR'): Promise<Currency
   const res = await fetch(`/api/currency/rates?base=${encodeURIComponent(base)}`);
   if (!res.ok) throw new Error('Failed to load currency rates');
   return res.json();
+}
+
+export async function fetchDestinations(): Promise<DestinationItem[]> {
+  const res = await fetch('/api/destinations');
+  if (!res.ok) throw new Error('Failed to load destinations');
+  return res.json();
+}
+
+export async function createDestination(dest: Partial<DestinationItem>): Promise<DestinationItem> {
+  const res = await fetch('/api/admin/destinations', {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(dest),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to create destination');
+  return data.destination;
+}
+
+export async function updateDestination(id: string, dest: Partial<DestinationItem>): Promise<DestinationItem> {
+  const res = await fetch(`/api/admin/destinations/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify(dest),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to update destination');
+  return data.destination;
+}
+
+export async function deleteDestination(id: string): Promise<void> {
+  const res = await fetch(`/api/admin/destinations/${id}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  if (!res.ok) throw new Error('Failed to delete destination');
+}
+
+// Customer Auth & Bookings
+const CUSTOMER_USER_KEY = 'aazam_customer_user';
+
+export function getStoredCustomer(): CustomerUser | null {
+  try {
+    const raw = localStorage.getItem(CUSTOMER_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredCustomer(user: CustomerUser | null) {
+  if (user) {
+    localStorage.setItem(CUSTOMER_USER_KEY, JSON.stringify(user));
+  } else {
+    localStorage.removeItem(CUSTOMER_USER_KEY);
+  }
+}
+
+export async function customerLogin(
+  name: string,
+  phone: string,
+  email?: string
+): Promise<{ success: boolean; user: CustomerUser }> {
+  const res = await fetch('/api/customer/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, phone, email }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Login failed');
+  setStoredCustomer(data.user);
+  return data;
+}
+
+export async function fetchCustomerEnquiries(phone: string, email?: string): Promise<Enquiry[]> {
+  const params = new URLSearchParams();
+  if (phone) params.set('phone', phone);
+  if (email) params.set('email', email);
+  const res = await fetch(`/api/customer/enquiries?${params.toString()}`);
+  if (!res.ok) throw new Error('Failed to load enquiries');
+  return res.json();
+}
+
+export async function trackEnquiry(ref: string): Promise<{ success: boolean; enquiry: Enquiry }> {
+  const res = await fetch(`/api/enquiries/track/${encodeURIComponent(ref)}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Booking enquiry not found');
+  return data;
+}
+
+export async function cancelCustomerEnquiry(
+  id: string,
+  customerPhone?: string,
+  reason?: string
+): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`/api/customer/enquiries/${id}/cancel`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerPhone, reason }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to request cancellation');
+  return data;
 }
 
 export async function submitEnquiry(payload: Partial<Enquiry>): Promise<{
@@ -465,5 +572,21 @@ export async function fetchFlights(params: {
   }
   return data;
 }
+
+export async function sendAiChat(payload: AiChatRequest): Promise<AiChatResponse> {
+  const res = await fetch('/api/ai/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to communicate with AI Travel Assistant');
+  }
+  return data;
+}
+
 
 

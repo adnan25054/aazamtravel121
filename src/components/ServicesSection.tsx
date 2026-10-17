@@ -9,13 +9,15 @@ import {
   MapPin, 
   MessageSquare, 
   ArrowRight,
-  Check
+  Check,
+  Coins
 } from 'lucide-react';
 
 interface ServicesSectionProps {
   services: ServiceItem[];
   agencyWhatsApp: string;
   onSelectServiceForBooking: (serviceKey: string) => void;
+  onOpenCurrencyConverter?: () => void;
 }
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -25,12 +27,14 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Building2,
   Compass,
   MapPin,
+  Coins,
 };
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({
   services,
   agencyWhatsApp,
   onSelectServiceForBooking,
+  onOpenCurrencyConverter,
 }) => {
   const cleanWhatsApp = agencyWhatsApp.replace(/[^0-9]/g, '');
 
@@ -140,6 +144,50 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Currency Converter & Travel Forex Feature Banner */}
+        <div className="mt-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0B2545] via-[#133E68] to-[#0B2545] text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6 border border-slate-700/50">
+          <div className="flex items-start gap-4">
+            <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 shrink-0">
+              <Coins className="w-8 h-8" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2 border border-emerald-400/30">
+                <span>Free Travel Utility</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                Live Currency Converter & Travel Forex Desk
+              </h3>
+              <p className="text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                Traveling abroad or planning Umrah? Check live exchange rates for Saudi Riyal (SAR), UAE Dirham (AED), US Dollar (USD), Euro (EUR), and 25+ global currencies. Get guidance on physical cash notes and Multi-Currency Forex Cards.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full lg:w-auto">
+            {onOpenCurrencyConverter && (
+              <button
+                onClick={onOpenCurrencyConverter}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 transition-all hover:scale-105"
+              >
+                <Coins className="w-4 h-4" />
+                <span>Open Currency Converter</span>
+              </button>
+            )}
+            <a
+              href={`https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
+                'Hello Aazam Travel Agency, I want to inquire about foreign exchange (Forex) and currency rates for my trip.'
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-sm bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all"
+            >
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
+              <span>Forex WhatsApp Desk</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>

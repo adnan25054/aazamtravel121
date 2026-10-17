@@ -22,6 +22,8 @@ export const AdminUsersView: React.FC = () => {
   const [suspensionReason, setSuspensionReason] = useState('Violation of travel community guidelines');
   const [showSuspendModal, setShowSuspendModal] = useState<SocialProfile | null>(null);
 
+  const [roleFilter, setRoleFilter] = useState<'all' | 'not_admin' | 'admin'>('all');
+
   const fetchUsers = async (q?: string) => {
     try {
       setLoading(true);
@@ -48,6 +50,19 @@ export const AdminUsersView: React.FC = () => {
     }
   };
 
+  const displayedUsers = users.filter((u) => {
+    if (roleFilter === 'not_admin') {
+      return u.role !== 'admin' && u.role !== 'super_admin';
+    }
+    if (roleFilter === 'admin') {
+      return u.role === 'admin' || u.role === 'super_admin';
+    }
+    return true;
+  });
+
+  const notAdminCount = users.filter((u) => u.role !== 'admin' && u.role !== 'super_admin').length;
+  const adminCount = users.filter((u) => u.role === 'admin' || u.role === 'super_admin').length;
+
   return (
     <div className="space-y-6">
       {/* Header & Search */}
@@ -58,7 +73,7 @@ export const AdminUsersView: React.FC = () => {
             <span>User Account Management</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Search, inspect, suspend or restore member accounts with server-side audit logs
+            Search, inspect, filter by role (Not Admin / Admins), suspend or restore member accounts
           </p>
         </div>
 
@@ -74,13 +89,52 @@ export const AdminUsersView: React.FC = () => {
         </div>
       </div>
 
+      {/* Role Filter Tabs (Not Admin vs Admin vs All) */}
+      <div className="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit">
+        <button
+          type="button"
+          onClick={() => setRoleFilter('all')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            roleFilter === 'all'
+              ? 'bg-white dark:bg-slate-900 text-[#0B2545] dark:text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          All Users ({users.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setRoleFilter('not_admin')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            roleFilter === 'not_admin'
+              ? 'bg-orange-500 text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-orange-600'
+          }`}
+        >
+          <UserCheck className="w-3.5 h-3.5" />
+          <span>Not Admin ({notAdminCount})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setRoleFilter('admin')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            roleFilter === 'admin'
+              ? 'bg-[#0B2545] text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-[#0B2545]'
+          }`}
+        >
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>Admins Only ({adminCount})</span>
+        </button>
+      </div>
+
       {/* Users Table */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xs overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-xs text-slate-500">Loading user records...</div>
-        ) : users.length === 0 ? (
+        ) : displayedUsers.length === 0 ? (
           <div className="py-16 text-center text-xs text-slate-500">
-            No accounts matched &ldquo;{searchQuery}&rdquo;.
+            No accounts matched &ldquo;{searchQuery}&rdquo; {roleFilter !== 'all' ? `with filter: ${roleFilter}` : ''}.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -96,7 +150,7 @@ export const AdminUsersView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {users.map((u) => {
+                {displayedUsers.map((u) => {
                   const isSuspended = u.status === 'suspended';
                   return (
                     <tr key={u.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">

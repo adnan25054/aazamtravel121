@@ -20,6 +20,8 @@ import { BookingHubSection } from './components/BookingHubSection';
 import { TrainPage } from './components/TrainPage';
 import { FlightPage } from './components/FlightPage';
 import { NewsPage } from './components/NewsPage';
+import { CurrencyPage } from './components/CurrencyPage';
+import { CurrencyConverterCard } from './components/CurrencyConverterCard';
 import { ServicesSection } from './components/ServicesSection';
 import { WhyChooseUs } from './components/WhyChooseUs';
 import { TourPackagesSection } from './components/TourPackagesSection';
@@ -38,7 +40,8 @@ import {
   ShieldCheck, 
   Lock, 
   Train,
-  ArrowUp
+  ArrowUp,
+  Coins
 } from 'lucide-react';
 
 const DEFAULT_SETTINGS: WebsiteSettings = {
@@ -87,14 +90,14 @@ export default function App() {
   const [preselectedContactService, setPreselectedContactService] = useState<ServiceType | undefined>(undefined);
   const [activeBookingTab, setActiveBookingTab] = useState<ServiceType>('train');
 
-  // Page Routing: Support dedicated /train page, /flight page, /news page, /bus routing, and standalone /admin portal
-  const getInitialPage = (): 'home' | 'train' | 'flight' | 'news' | 'admin' => {
+  // Page Routing: Support dedicated /train page, /flight page, /news page, /currency page, /bus routing, and standalone /admin portal
+  const getInitialPage = (): 'home' | 'train' | 'flight' | 'news' | 'currency' | 'admin' => {
     if (typeof window !== 'undefined') {
       const p = window.location.pathname.toLowerCase();
       if (p === '/admin' || p === '/admin/' || p.startsWith('/admin/')) {
         return 'admin';
       }
-      if (p === '/train' || p === '/trains' || p.startsWith('/train/')) {
+      if (p === '/train' || p === '/trains' || p.startsWith('/train/') || p === '/pnr' || p === '/pnr/' || p.startsWith('/pnr/')) {
         return 'train';
       }
       if (p === '/flight' || p === '/flights' || p.startsWith('/flight/')) {
@@ -103,11 +106,14 @@ export default function App() {
       if (p === '/news' || p === '/news/' || p.startsWith('/news/')) {
         return 'news';
       }
+      if (p === '/currency' || p === '/forex' || p.startsWith('/currency/')) {
+        return 'currency';
+      }
     }
     return 'home';
   };
 
-  const [currentPage, setCurrentPage] = useState<'home' | 'train' | 'flight' | 'news' | 'admin'>(getInitialPage);
+  const [currentPage, setCurrentPage] = useState<'home' | 'train' | 'flight' | 'news' | 'currency' | 'admin'>(getInitialPage);
 
   // Sync with browser back/forward buttons
   useEffect(() => {
@@ -115,12 +121,14 @@ export default function App() {
       const p = window.location.pathname.toLowerCase();
       if (p === '/admin' || p === '/admin/' || p.startsWith('/admin/')) {
         setCurrentPage('admin');
-      } else if (p === '/train' || p === '/trains' || p.startsWith('/train/')) {
+      } else if (p === '/train' || p === '/trains' || p.startsWith('/train/') || p === '/pnr' || p === '/pnr/' || p.startsWith('/pnr/')) {
         setCurrentPage('train');
       } else if (p === '/flight' || p === '/flights' || p.startsWith('/flight/')) {
         setCurrentPage('flight');
       } else if (p === '/news' || p === '/news/' || p.startsWith('/news/')) {
         setCurrentPage('news');
+      } else if (p === '/currency' || p === '/forex' || p.startsWith('/currency/')) {
+        setCurrentPage('currency');
       } else if (p === '/bus' || p === '/buses' || p.startsWith('/bus/')) {
         setCurrentPage('home');
         setActiveBookingTab('bus');
@@ -146,7 +154,7 @@ export default function App() {
     }
   }, []);
 
-  const navigateToPage = (page: 'home' | 'train' | 'flight' | 'news' | 'admin', targetUrl?: string) => {
+  const navigateToPage = (page: 'home' | 'train' | 'flight' | 'news' | 'currency' | 'admin', targetUrl?: string) => {
     setCurrentPage(page);
     let url = targetUrl;
     if (!url) {
@@ -154,6 +162,7 @@ export default function App() {
       else if (page === 'train') url = '/train';
       else if (page === 'flight') url = '/flight';
       else if (page === 'news') url = '/news';
+      else if (page === 'currency') url = '/currency';
       else url = '/';
     }
     if (window.location.pathname !== url) {
@@ -213,13 +222,13 @@ export default function App() {
 
   const handleScrollToSection = (sectionId: string) => {
     // If clicking Train Booking, go to dedicated /train page!
-    if (sectionId === 'train-booking' || sectionId === 'train') {
+    if (sectionId === 'train-booking' || sectionId === 'train' || sectionId === 'trains') {
       navigateToPage('train', '/train');
       return;
     }
 
     // If clicking Flight Booking or Track Flight, go to dedicated /flight page!
-    if (sectionId === 'flight-booking' || sectionId === 'flight' || sectionId === 'services-flight') {
+    if (sectionId === 'flight-booking' || sectionId === 'flight' || sectionId === 'flights' || sectionId === 'services-flight') {
       navigateToPage('flight', '/flight');
       return;
     }
@@ -230,26 +239,43 @@ export default function App() {
       return;
     }
 
+    // If clicking Currency Converter / Forex, go to dedicated /currency page!
+    if (sectionId === 'currency' || sectionId === 'currency-converter' || sectionId === 'forex') {
+      navigateToPage('currency', '/currency');
+      return;
+    }
+
     if (sectionId === 'station-search') {
       navigateToPage('train', '/train#stations');
       return;
     }
 
-    // If currently on /train page and navigating to a home section
+    if (sectionId === 'login' || sectionId === 'admin') {
+      navigateToPage('admin', '/admin');
+      return;
+    }
+
+    // If currently on another page and navigating to a home section
     if (currentPage !== 'home') {
       navigateToPage('home', '/');
       setTimeout(() => {
-        if (sectionId === 'flight-booking') {
+        if (sectionId === 'flight-booking' || sectionId === 'flights') {
           setActiveBookingTab('flight');
           const el = document.getElementById('train-booking');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (sectionId === 'bus-booking' || sectionId === 'services-bus') {
+        } else if (sectionId === 'bus-booking' || sectionId === 'services-bus' || sectionId === 'buses' || sectionId === 'bus') {
           setActiveBookingTab('bus');
           const el = document.getElementById('train-booking');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (sectionId === 'hotel-booking') {
+        } else if (sectionId === 'hotel-booking' || sectionId === 'hotels' || sectionId === 'hotel') {
           setActiveBookingTab('hotel');
           const el = document.getElementById('train-booking');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (sectionId === 'packages' || sectionId === 'holiday-packages' || sectionId === 'tour-packages') {
+          const el = document.getElementById('tour-packages') || document.getElementById('packages');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (sectionId === 'religious-tours' || sectionId === 'religious' || sectionId === 'services-religious') {
+          const el = document.getElementById('tour-packages') || document.getElementById('services');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (sectionId === 'hero') {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -262,21 +288,31 @@ export default function App() {
     }
 
     // Already on home page
-    if (sectionId === 'flight-booking') {
+    if (sectionId === 'flight-booking' || sectionId === 'flights') {
       setActiveBookingTab('flight');
       const el = document.getElementById('train-booking');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
-    if (sectionId === 'bus-booking' || sectionId === 'services-bus') {
+    if (sectionId === 'bus-booking' || sectionId === 'services-bus' || sectionId === 'buses' || sectionId === 'bus') {
       setActiveBookingTab('bus');
       const el = document.getElementById('train-booking');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
-    if (sectionId === 'hotel-booking') {
+    if (sectionId === 'hotel-booking' || sectionId === 'hotels' || sectionId === 'hotel') {
       setActiveBookingTab('hotel');
       const el = document.getElementById('train-booking');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if (sectionId === 'packages' || sectionId === 'holiday-packages' || sectionId === 'tour-packages') {
+      const el = document.getElementById('tour-packages') || document.getElementById('packages');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if (sectionId === 'religious-tours' || sectionId === 'religious' || sectionId === 'services-religious') {
+      const el = document.getElementById('tour-packages') || document.getElementById('services');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
@@ -371,6 +407,12 @@ export default function App() {
             onEnquirySuccess={(data) => setSubmittedEnquiryData(data)}
             onNavigateHome={() => navigateToPage('home', '/')}
             onNavigateSection={handleScrollToSection}
+            initialTab={
+              typeof window !== 'undefined' &&
+              (window.location.pathname.startsWith('/pnr') || window.location.hash.includes('pnr'))
+                ? 'pnr'
+                : undefined
+            }
           />
         ) : currentPage === 'flight' ? (
           <FlightPage
@@ -393,6 +435,12 @@ export default function App() {
             onNavigateHome={() => navigateToPage('home', '/')}
             onBookTrainClick={() => navigateToPage('train', '/train')}
           />
+        ) : currentPage === 'currency' ? (
+          <CurrencyPage
+            agencyPhone={settings.phone}
+            agencyWhatsApp={settings.whatsapp}
+            onNavigateHome={() => navigateToPage('home', '/')}
+          />
         ) : (
           <>
             {/* 1. Hero Section */}
@@ -406,6 +454,7 @@ export default function App() {
               }}
               onExploreServicesClick={() => handleScrollToSection('services')}
               onSearchStationsClick={() => handleScrollToSection('station-search')}
+              onCurrencyClick={() => navigateToPage('currency', '/currency')}
             />
 
             {/* 2. Unified Travel Booking Engine (Train, Flight, Hotel & Other Passengers) */}
@@ -417,13 +466,38 @@ export default function App() {
               onEnquirySuccess={(data) => setSubmittedEnquiryData(data)}
             />
 
-
             {/* 3. Our Services Section */}
             <ServicesSection
               services={services}
               agencyWhatsApp={settings.whatsapp}
               onSelectServiceForBooking={handleSelectServiceForBooking}
+              onOpenCurrencyConverter={() => navigateToPage('currency', '/currency')}
             />
+
+            {/* 3.5 Interactive Live Currency Converter & Travel Forex Desk */}
+            <section id="currency-converter" className="py-16 bg-slate-50/80 border-t border-slate-200/80">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center max-w-3xl mx-auto mb-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
+                    <Coins className="w-3.5 h-3.5" />
+                    <span>Instant Live Tool</span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-black text-[#0B2545] tracking-tight">
+                    Live Travel Currency Converter & Forex
+                  </h2>
+                  <p className="mt-2 text-sm sm:text-base text-slate-600">
+                    Calculate real-time foreign currency exchange rates for Saudi Riyal (SAR for Umrah), UAE Dirham (AED), US Dollar (USD), Euro (EUR) & more before booking your trip.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  <CurrencyConverterCard
+                    agencyPhone={settings.phone}
+                    agencyWhatsApp={settings.whatsapp}
+                    onNavigateForexContact={() => navigateToPage('currency', '/currency')}
+                  />
+                </div>
+              </div>
+            </section>
 
             {/* 4. Why Choose Us & How It Works */}
             <WhyChooseUs />
@@ -480,20 +554,9 @@ export default function App() {
         </footer>
       )}
 
-      {/* Floating Action Buttons (Sticky Quick WhatsApp & Call) */}
-      <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-3 pointer-events-auto">
-        {/* Admin Quick Switch (if logged in) */}
-        {isAdminLoggedIn && (
-          <button
-            onClick={() => navigateToPage('admin', '/admin')}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#0B2545] text-white text-xs font-bold shadow-xl border border-blue-800 hover:bg-blue-900 transition-all hover:scale-105"
-            title="Open Admin Dashboard"
-          >
-            <ShieldCheck className="w-4 h-4 text-orange-400" />
-            <span className="hidden sm:inline">Admin Active</span>
-          </button>
-        )}
 
+      {/* Floating Action Buttons (Bottom Left Sticky WhatsApp & Staff Status) */}
+      <div className="fixed bottom-6 left-6 z-30 flex items-center gap-3 pointer-events-auto">
         {/* Quick WhatsApp Floating Button */}
         <a
           href={`https://wa.me/${cleanWhatsApp}?text=${encodeURIComponent(
@@ -501,12 +564,24 @@ export default function App() {
           )}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xl shadow-emerald-700/30 transition-all hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xl shadow-emerald-700/30 transition-all hover:scale-105 active:scale-95 border border-white/20"
           aria-label="Direct WhatsApp Chat"
         >
-          <MessageSquare className="w-5 h-5" />
-          <span className="hidden sm:inline">Online Booking Desk</span>
+          <MessageSquare className="w-4 h-4" />
+          <span className="hidden sm:inline">WhatsApp Booking Desk</span>
         </a>
+
+        {/* Admin Quick Switch (if logged in) */}
+        {isAdminLoggedIn && (
+          <button
+            onClick={() => navigateToPage('admin', '/admin')}
+            className="flex items-center gap-2 px-3 py-2 rounded-full bg-[#0B2545] text-white text-xs font-bold shadow-xl border border-blue-800 hover:bg-blue-900 transition-all"
+            title="Open Admin Dashboard"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+            <span className="hidden sm:inline">Admin</span>
+          </button>
+        )}
       </div>
 
       {/* WhatsApp Modal after Enquiry Submission (Notice requirement) */}

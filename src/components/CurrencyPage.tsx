@@ -325,7 +325,7 @@ export const CurrencyPage: React.FC<CurrencyPageProps> = ({
                       <td className="py-3 px-4 font-mono font-bold text-slate-900">
                         {curr?.symbol} {(25000 * rate).toLocaleString('en-IN', { maximumFractionDigits: 1 })}
                       </td>
-                      <td className="py-3 px-4 font-mono font-bold text-orange-600 font-bold">
+                      <td className="py-3 px-4 font-mono text-orange-600 font-bold">
                         {curr?.symbol} {(50000 * rate).toLocaleString('en-IN', { maximumFractionDigits: 1 })}
                       </td>
                       <td className="py-3 px-4 font-mono font-black text-emerald-700">

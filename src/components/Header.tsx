@@ -15,12 +15,15 @@ import {
   Clock, 
   MapPin,
   ChevronRight,
-  Newspaper
+  Newspaper,
+  Coins,
+  Heart,
+  User
 } from 'lucide-react';
 
 interface HeaderProps {
   settings: WebsiteSettings;
-  currentPage?: 'home' | 'train' | 'flight' | 'news' | 'admin';
+  currentPage?: string;
   onOpenAdminLogin: () => void;
   isAdminLoggedIn: boolean;
   onOpenAdminDashboard: () => void;
@@ -40,15 +43,25 @@ export const Header: React.FC<HeaderProps> = ({
   const cleanPhone = settings.phone.replace(/[^0-9]/g, '');
   const cleanWhatsApp = settings.whatsapp.replace(/[^0-9]/g, '');
 
-  const navItems = [
-    { label: 'Home', id: 'hero' },
-    { label: 'Train Booking', id: 'train-booking', icon: Train, highlight: true },
-    { label: 'Flight Booking', id: 'flight-booking', icon: Plane },
-    { label: 'Hotel Booking', id: 'hotel-booking', icon: Building2 },
-    { label: 'Bus Booking', id: 'bus-booking', icon: Bus },
-    { label: 'Tour Packages', id: 'packages', icon: Compass },
-    { label: 'Travel News', id: 'news', icon: Newspaper },
-    { label: 'Contact', id: 'contact' },
+  interface NavItem {
+    label: string;
+    id: string;
+    pageKey: string;
+    icon?: React.ComponentType<{ className?: string }>;
+    highlight?: boolean;
+    badge?: string;
+  }
+
+  const navItems: NavItem[] = [
+    { label: 'Home', id: 'hero', pageKey: 'home' },
+    { label: 'Flights', id: 'flights', pageKey: 'flight', icon: Plane },
+    { label: 'Hotels', id: 'hotels', pageKey: 'hotels', icon: Building2 },
+    { label: 'Trains', id: 'trains', pageKey: 'train', icon: Train, highlight: true },
+    { label: 'Buses', id: 'buses', pageKey: 'buses', icon: Bus },
+    { label: 'Holiday Packages', id: 'packages', pageKey: 'packages', icon: Compass },
+    { label: 'Religious Tours', id: 'religious-tours', pageKey: 'religious', icon: Heart },
+    { label: 'Contact', id: 'contact', pageKey: 'contact', icon: Phone },
+    { label: 'Login', id: 'login', pageKey: 'login', icon: User },
   ];
 
   const handleNavClick = (id: string) => {
@@ -103,18 +116,17 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center space-x-1" aria-label="Main Navigation">
             {navItems.map((item) => {
-              const isTrainActive = item.id === 'train-booking' && currentPage === 'train';
-              const isFlightActive = item.id === 'flight-booking' && currentPage === 'flight';
-              const isNewsActive = item.id === 'news' && currentPage === 'news';
-              const isHomeActive = item.id === 'hero' && currentPage === 'home';
+              const isActive = currentPage === item.pageKey;
 
               let buttonClass = 'text-slate-700 hover:text-[#0B2545] hover:bg-slate-100/70';
-              if (isTrainActive) {
-                buttonClass = 'bg-orange-500 text-white font-bold shadow-xs hover:bg-orange-600';
-              } else if (isFlightActive) {
-                buttonClass = 'bg-[#0B2545] text-white font-bold shadow-xs hover:bg-[#133E68]';
-              } else if (isNewsActive) {
-                buttonClass = 'bg-slate-800 text-white font-bold shadow-xs hover:bg-slate-700';
+              if (isActive) {
+                if (item.pageKey === 'train') {
+                  buttonClass = 'bg-orange-500 text-white font-bold shadow-xs hover:bg-orange-600';
+                } else if (item.pageKey === 'flight') {
+                  buttonClass = 'bg-[#0B2545] text-white font-bold shadow-xs hover:bg-[#133E68]';
+                } else {
+                  buttonClass = 'bg-[#0B2545] text-white font-bold shadow-xs hover:bg-[#133E68]';
+                }
               } else if (item.highlight) {
                 buttonClass = 'text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-semibold';
               }
@@ -123,18 +135,17 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`px-3 py-2 text-sm font-medium transition-colors rounded-lg flex items-center gap-1.5 ${buttonClass}`}
+                  className={`px-3 py-2 text-xs xl:text-sm font-medium transition-colors rounded-lg flex items-center gap-1.5 ${buttonClass}`}
                 >
-                  {item.icon && <item.icon className="w-4 h-4 opacity-85" />}
+                  {item.icon && <item.icon className="w-3.5 h-3.5 xl:w-4 xl:h-4 opacity-85" />}
                   <span>{item.label}</span>
-                  {isTrainActive && (
+                  {item.badge && (
+                    <span className="px-1.5 py-0.5 text-[9px] font-black rounded-full bg-orange-500 text-white shadow-xs">
+                      {item.badge}
+                    </span>
+                  )}
+                  {isActive && (
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  )}
-                  {isFlightActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-                  )}
-                  {isNewsActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
                   )}
                 </button>
               );
@@ -226,31 +237,31 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="space-y-1">
             {navItems.map((item) => {
-              const isTrainActive = item.id === 'train-booking' && currentPage === 'train';
-              const isFlightActive = item.id === 'flight-booking' && currentPage === 'flight';
-              const isNewsActive = item.id === 'news' && currentPage === 'news';
-              const isItemActive = isTrainActive || isFlightActive || isNewsActive;
+              const isActive = currentPage === item.pageKey;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-base font-medium transition-colors ${
-                    isTrainActive
-                      ? 'text-white bg-orange-500 font-bold shadow-xs'
-                      : isFlightActive
-                      ? 'text-white bg-[#0B2545] font-bold shadow-xs'
-                      : isNewsActive
-                      ? 'text-white bg-slate-800 font-bold shadow-xs'
+                    isActive
+                      ? item.pageKey === 'train'
+                        ? 'text-white bg-orange-500 font-bold shadow-xs'
+                        : 'text-white bg-[#0B2545] font-bold shadow-xs'
                       : item.highlight
                       ? 'text-orange-600 bg-orange-50 font-semibold'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    {item.icon && <item.icon className={`w-5 h-5 ${isItemActive ? 'text-white' : 'text-slate-500'}`} />}
+                    {item.icon && <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500'}`} />}
                     <span>{item.label}</span>
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 text-[9px] font-black rounded-full bg-orange-500 text-white shadow-xs">
+                        {item.badge}
+                      </span>
+                    )}
                   </div>
-                  <ChevronRight className={`w-4 h-4 ${isItemActive ? 'text-white' : 'text-slate-400'}`} />
+                  <ChevronRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 </button>
               );
             })}

@@ -122,6 +122,24 @@ export const Footer: React.FC<FooterProps> = ({
                   Religious Tours & Pilgrimages
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onNavigateSection('currency')}
+                  className="hover:text-orange-400 text-emerald-400 font-medium transition-colors text-left flex items-center gap-1.5"
+                >
+                  <span>Currency Converter & Forex</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigateSection('ai')}
+                  className="hover:text-orange-400 text-purple-300 font-medium transition-colors text-left flex items-center gap-1.5"
+                >
+                  <span>AI Travel & Vision Studio</span>
+                  <span className="px-1 py-0.2 text-[8px] bg-purple-500 text-white rounded font-bold">GPT-6</span>
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -137,6 +155,14 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-white transition-colors"
                 >
                   Home Overview
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigateSection('currency')}
+                  className="hover:text-orange-400 transition-colors text-left flex items-center gap-1.5"
+                >
+                  <span>Currency Converter</span>
                 </button>
               </li>
               <li>

@@ -11,20 +11,23 @@ import {
   ArrowLeft, 
   ShieldCheck, 
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  User
 } from 'lucide-react';
 
 interface AdminLoginViewProps {
   onLoginSuccess: (user: AdminUser) => void;
   onBackToSite: () => void;
+  onNavigateCustomerLogin?: () => void;
 }
 
 export const AdminLoginView: React.FC<AdminLoginViewProps> = ({
   onLoginSuccess,
   onBackToSite,
+  onNavigateCustomerLogin,
 }) => {
-  const [email, setEmail] = useState('admin@aazamtravels.com');
-  const [password, setPassword] = useState('AazamTravels@2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -168,19 +171,32 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({
             </button>
           </form>
 
-          {/* Quick Fill Box */}
-          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
-            <span className="text-slate-400 text-[11px]">
-              Preset Staff Credentials
-            </span>
-            <button
-              type="button"
-              onClick={handleUseDemo}
-              className="inline-flex items-center gap-1 font-bold text-orange-600 hover:text-orange-700 text-xs py-1 px-2 rounded-lg bg-orange-50 hover:bg-orange-100 transition-colors"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-orange-500" />
-              <span>Fill Default Login</span>
-            </button>
+          {/* Quick Fill Box & Not Admin switch */}
+          <div className="mt-5 pt-4 border-t border-slate-100 space-y-3">
+            {onNavigateCustomerLogin && (
+              <button
+                type="button"
+                onClick={onNavigateCustomerLogin}
+                className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B2545] font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <User className="w-4 h-4 text-orange-500" />
+                <span>Not Admin? Switch to Customer / User Portal</span>
+              </button>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+              <span className="text-slate-400 text-[11px]">
+                Agency Staff Quick Test
+              </span>
+              <button
+                type="button"
+                onClick={handleUseDemo}
+                className="inline-flex items-center gap-1 font-bold text-orange-600 hover:text-orange-700 text-xs py-1 px-2 rounded-lg bg-orange-50 hover:bg-orange-100 transition-colors cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+                <span>Auto-fill Demo Credentials</span>
+              </button>
+            </div>
           </div>
         </div>
 

@@ -199,13 +199,26 @@ export const socialApi = {
     });
   },
 
+  // Public: Community Members / All Users (Accessible by non-admin)
+  async getPublicUsers(role?: string, query?: string) {
+    const params = new URLSearchParams();
+    if (role) params.set('role', role);
+    if (query) params.set('q', query);
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    return this.fetch(`/users${qs}`);
+  },
+
   // Admin APIs
   async getAdminStats() {
     return this.fetch('/admin/stats');
   },
 
-  async getAdminUsers(query?: string) {
-    return this.fetch(`/admin/users${query ? `?q=${encodeURIComponent(query)}` : ''}`);
+  async getAdminUsers(query?: string, role?: string) {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (role) params.set('role', role);
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    return this.fetch(`/admin/users${qs}`);
   },
 
   async setAccountStatus(userId: string, status: 'active' | 'suspended' | 'banned', reason: string) {

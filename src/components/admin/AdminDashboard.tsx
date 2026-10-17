@@ -183,6 +183,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [serviceFilter, setServiceFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  // Filters for customers directory (All Users vs Not Admin)
+  const [customerSearchQuery, setCustomerSearchQuery] = useState('');
+  const [customerFilter, setCustomerFilter] = useState<'all' | 'not_admin' | 'confirmed'>('all');
+
   // Modals state
   const [notesModalEnquiry, setNotesModalEnquiry] = useState<Enquiry | null>(null);
   const [newNoteText, setNewNoteText] = useState('');
@@ -1471,31 +1475,110 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* ========================================================= */}
           {/* TAB 4: CUSTOMERS DIRECTORY */}
           {/* ========================================================= */}
-          {activeTab === 'customers' && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-black text-[#0B2545]">Customers Directory</h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Aggregated client profiles compiled from booking enquiries, showing travel history and direct contact links.
-                </p>
-              </div>
+          {activeTab === 'customers' && (() => {
+            const displayedCustomers = customers.filter((c) => {
+              if (customerFilter === 'confirmed' && c.confirmedBookings === 0) return false;
+              if (!customerSearchQuery.trim()) return true;
+              const q = customerSearchQuery.toLowerCase();
+              return (
+                c.name.toLowerCase().includes(q) ||
+                c.phone.includes(q) ||
+                Boolean(c.email && c.email.toLowerCase().includes(q))
+              );
+            });
 
-              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-                {/* Mobile Cards for Customers (< md) */}
-                <div className="block md:hidden divide-y divide-slate-100">
-                  {customers.map((c, i) => (
-                    <div key={i} className="p-4 space-y-2.5 bg-white">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-bold text-sm text-[#0B2545]">{c.name}</div>
-                          {c.email && (
-                            <span className="text-[11px] text-slate-400 block">{c.email}</span>
-                          )}
-                        </div>
-                        <span className="text-[10px] text-slate-400">
-                          {new Date(c.lastEnquiryDate).toLocaleDateString()}
-                        </span>
-                      </div>
+            const confirmedCount = customers.filter((c) => c.confirmedBookings > 0).length;
+
+            return (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-black text-[#0B2545]">Customers &amp; Users Directory</h2>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Aggregated client profiles compiled from booking enquiries and portal accounts, showing travel history and direct contact links.
+                    </p>
+                  </div>
+
+                  {/* Customer Search */}
+                  <div className="relative w-full sm:w-80">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      value={customerSearchQuery}
+                      onChange={(e) => setCustomerSearchQuery(e.target.value)}
+                      placeholder="Search customer name, phone, email..."
+                      className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Filter Tabs (All Users vs Not Admin vs Confirmed) */}
+                <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setCustomerFilter('all')}
+                    className={`px-3.5 py-1.5 rounded-xl font-bold transition-all ${
+                      customerFilter === 'all'
+                        ? 'bg-white text-[#0B2545] shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    All Users ({customers.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCustomerFilter('not_admin')}
+                    className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+                      customerFilter === 'not_admin'
+                        ? 'bg-orange-500 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-orange-600'
+                    }`}
+                  >
+                    <UserCheck className="w-3.5 h-3.5" />
+                    <span>Not Admin (Clients) ({customers.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCustomerFilter('confirmed')}
+                    className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+                      customerFilter === 'confirmed'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-emerald-700'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Confirmed Bookings ({confirmedCount})</span>
+                  </button>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+                  {displayedCustomers.length === 0 ? (
+                    <div className="text-center py-16 px-4">
+                      <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                      <p className="text-sm font-bold text-slate-700">No customer profiles found</p>
+                      <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                        {customerSearchQuery
+                          ? `No client matched "${customerSearchQuery}". Try clearing search.`
+                          : 'Customer profiles are automatically aggregated here as clients place train, flight, or holiday bookings.'}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Mobile Cards for Customers (< md) */}
+                      <div className="block md:hidden divide-y divide-slate-100">
+                        {displayedCustomers.map((c, i) => (
+                          <div key={i} className="p-4 space-y-2.5 bg-white">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <div className="font-bold text-sm text-[#0B2545]">{c.name}</div>
+                                {c.email && (
+                                  <span className="text-[11px] text-slate-400 block">{c.email}</span>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-slate-400">
+                                {new Date(c.lastEnquiryDate).toLocaleDateString()}
+                              </span>
+                            </div>
 
                       <div className="flex items-center gap-2 text-xs">
                         <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-[11px]">
@@ -1562,7 +1645,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {customers.map((c, i) => (
+                      {displayedCustomers.map((c, i) => (
                         <tr key={i} className="hover:bg-slate-50">
                           <td className="px-4 py-3.5 font-bold text-slate-900">
                             {c.name}
@@ -1625,15 +1708,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </tbody>
                   </table>
                 </div>
-
-                {customers.length === 0 && (
-                  <div className="text-center py-12 text-slate-500 text-xs">
-                    No customer records found yet.
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+              </>
+            )}
+          </div>
+        </div>
+      );
+    })()}
 
           {/* ========================================================= */}
           {/* TAB 5: TOUR PACKAGES MANAGEMENT */}
